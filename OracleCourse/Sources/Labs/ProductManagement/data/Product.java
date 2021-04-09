@@ -22,36 +22,50 @@ public class Product {
      * in case of cash payments.
      */
     final public static BigDecimal CASH_DISCOUNT = new BigDecimal("0.15");
+    private static int ID = 100;
     private int id;
     private String name;
     private BigDecimal price;
+    private Rating rating;
+
+    public Product(String name, BigDecimal price, Rating rating)
+    {
+        id = ++ID;
+        this.name = name;
+        this.price = price;
+        this.rating = rating;
+    }
+    public Product(String name, BigDecimal price)
+    {
+        this(name, price, Rating.NOT_RATED);
+    }
+    public Product()
+    {
+        this("placeholder",BigDecimal.ZERO);
+    }
+    private Product(int id, String name, BigDecimal price, Rating rating)
+    {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.rating = rating;
+    }
 
     // Getters
-    public int getId()
-    {
-        return id;
-    }
-    public String getName()
-    {
-        return name;
-    }
-    public BigDecimal getPrice()
-    {
-        return price;
-    }
+    public int getId(){return id;}
+    public String getName(){return name;}
+    public BigDecimal getPrice(){return price;}
+    public Rating getRating(){return rating;}
 
-    // setters
-    public void setId(final int newId)
+    // // setters
+    // public void setId(final int newId){id = newId;}
+    // public void setName(final String newName){name = newName;}
+    // public void setPrice(final BigDecimal newPrice){price = newPrice;}
+    // public void setRating(final Rating newRating){rating = newRating;}
+
+    public Product applyRating(Rating rating)
     {
-        id = newId;
-    }
-    public void setName(final String newName)
-    {
-        name = newName;
-    }
-    public void setPrice(final BigDecimal newPrice)
-    {
-        price = newPrice;
+        return new Product(id,name,price,rating);
     }
 
     /**
@@ -72,7 +86,8 @@ public class Product {
     @Override
     public String toString()
     {
-        return "Product: " + name + " | ID: " + id + " | Price: " + price + " | CashDC: " + this.getCashDiscount() + " | DebitDC " + this.getDebitDiscount();
+        return "Product: " + name + " | ID: " + id + " | Price: " + price + 
+        " | CashDC: " + this.getCashDiscount() + " | DebitDC " + this.getDebitDiscount() + " | Rating " + rating;
     }
 
 }
