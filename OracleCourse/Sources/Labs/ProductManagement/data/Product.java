@@ -12,7 +12,7 @@ import java.util.Objects;
  * Each product can have a discount, calculated based on {@link DEBIT_DISCOUNT} and {@link CASH_DISCOUNT}
  * discount rates
  */
-public abstract class Product {
+public abstract class Product implements Rateable<Product>{
 
     /**
      * A constant that defines a {@link java.math.BigDecimal} that represents a rate of discount to be applied
@@ -45,10 +45,9 @@ public abstract class Product {
     public int getId(){return id;}
     public String getName(){return name;}
     public BigDecimal getPrice(){return price;}
-    public Rating getRating(){return rating;}
     public LocalDate getBestBefore(){return LocalDate.now();}
-
-    public abstract Product applyRating(Rating rating);
+    @Override
+    public Rating getRating(){return rating;}
 
     /**
      * A string that represents the discount availables regardless of payment options
