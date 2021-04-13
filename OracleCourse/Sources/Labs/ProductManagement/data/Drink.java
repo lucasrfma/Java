@@ -13,6 +13,10 @@ public class Drink extends Product {
     {
         super(id,name, price, rating);
     }
+    Drink(int id,String name, BigDecimal price, int rating)
+    {
+        super(id,name, price, rating);
+    }
     Drink(int id,String name, BigDecimal price)
     {
         super(id,name, price);

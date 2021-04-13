@@ -13,6 +13,11 @@ public class Food extends Product {
         super(id,name, price, rating);
         this.bestBefore = bestBefore;
     }
+    Food(int id,String name, BigDecimal price, int rating, LocalDate bestBefore)
+    {
+        super(id,name, price, rating);
+        this.bestBefore = bestBefore;
+    }
     Food(int id,String name, BigDecimal price, LocalDate bestBefore)
     {
         super(id, name, price);
