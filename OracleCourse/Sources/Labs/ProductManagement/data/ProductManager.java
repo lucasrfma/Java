@@ -1,14 +1,28 @@
 package Labs.ProductManagement.data;
 
 import java.math.BigDecimal;
-import java.text.MessageFormat;
-import java.text.NumberFormat;
 import java.time.LocalDate;
+// to concatenate and format strings
+import java.text.MessageFormat;
+// to customize number format, such as currency etc
+import java.text.NumberFormat;
+// to customize date time format, such as mm/dd/yyyy or something like that
 import java.time.format.DateTimeFormatter;
+// enumeration to easily choose between standard date time formats
 import java.time.format.FormatStyle;
+// to be used in conjunction with the above formatting classes
 import java.util.Locale;
+// to be able to get information out of a .properties file
+// used in tandem with locale to choose specific .properties files
+// according to chosen locale
 import java.util.ResourceBundle;
-import java.util.Arrays;
+
+//collections used
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public class ProductManager {
 
@@ -17,9 +31,7 @@ public class ProductManager {
     private DateTimeFormatter dateFormat;
     private NumberFormat moneyFormat;
     
-    private Product product;
-    private Review[] reviews;
-    private double ratingAverage;
+    Map<Product, List<Review>> products = new HashMap<>();
 
     /**
      * Constructor for ProductManager
@@ -48,51 +60,21 @@ public class ProductManager {
         moneyFormat = NumberFormat.getCurrencyInstance(locale);
     }
 
-
-    /**
-     * Since this product manager has to keep track of reviews and make an average
-     * out of them, doesn't seem appropriate to start off with a rating.
-     * Maybe if these methods also included in the parameters at least an
-     * "reviewNumber" integer as well, to give a weight to this starting rating it
-     * would make sense...
-     */
-    // public Product createProduct(int id, String name, BigDecimal price, Rating rating, LocalDate bestBefore)
-    // {
-    //     product = new Food(id, name, price, rating, bestBefore);
-    //     return product;
-    // }
-    // public Product createProduct(int id, String name, BigDecimal price, int rating, LocalDate bestBefore)
-    // {
-    //     product = new Food(id, name, price, rating, bestBefore);
-    //     return product;
-    // }
-
     public Product createProduct(int id, String name, BigDecimal price, LocalDate bestBefore)
     {
-        product = new Food(id, name, price, bestBefore);
-        return product;
-    }
-    public Product createProduct(int id, String name, BigDecimal price, Rating rating)
-    {
-        product = new Drink(id, name, price, rating);
-        return product;
-    }
-    public Product createProduct(int id, String name, BigDecimal price, int rating)
-    {
-        product = new Drink(id, name, price, rating);
+        Product product = new Food(id, name, price, bestBefore);
+        products.putIfAbsent(product, new ArrayList<Review>());
         return product;
     }
     public Product createProduct(int id, String name, BigDecimal price)
     {
-        product = new Drink(id, name, price);
+        Product product = new Drink(id, name, price);
+        products.putIfAbsent(product, new ArrayList<Review>());
         return product;
     }
 
     /**
-     * Review some other product...
-     *  Not sure how this would be useful, but it is what was created in the practice
-     *  lesson of the course
-     *  It would make sense if the rating+comment system was saved in the product itself I guess...
+     * Review a product on the Map
      * @param product - product to b reviewed
      * @param rating - rating to be applied
      * @param comment - comment made together with the rating
@@ -100,66 +82,87 @@ public class ProductManager {
      */
     public Product reviewProduct(Product product, Rating rating, String comment)
     {
-        Review newReview = new Review(rating, comment);
-        if(reviews != null)
-        {
-            reviews = Arrays.copyOf(reviews, reviews.length+1);
-            reviews[reviews.length-1] = newReview;
-        } else
-        {
-            reviews = new Review[]{newReview};
+        products.get(product).add(new Review(rating, comment));
+        List<Review> newReviewList = products.get(product);
+        double sum = 0;
+        for (Review review : newReviewList) {
+            sum += review.getRating().ordinal();
         }
-        ratingAverage += (rating.ordinal()-ratingAverage)/reviews.length;
-        this.product = product.applyRating((int)Math.round(ratingAverage));
-        return this.product;
+        product = product.applyRating((int)Math.round(sum/newReviewList.size()));
+
+        Collections.sort(newReviewList,Collections.reverseOrder());
+
+        products.remove(product);
+        products.put(product, newReviewList);
+        return product;
     }
     public Product reviewProduct(Product product, int rating, String comment)
     {
-        return this.reviewProduct(this.product,Rating.convert(rating), comment);
+        return this.reviewProduct(product,Rating.convert(rating), comment);
     }
-    /**
-     * Same method as above, but using this object's own Product.
-     * Seems to make more sense since the reviews are stored here, no on the Product object.
-     * But it also makes this class not a simple factoryClass, made to create products and return them
-     * but to actually keep track of a single product object and its reviews.
-     * @param rating - rating to be applied
-     * @param comment - comment made together with the rating
-     * @return product with the rating applied
-     */
-    public Product reviewProduct(Rating rating, String comment)
+    public Product reviewProduct(int id, Rating rating, String comment)
     {
-        return this.reviewProduct(this.product, rating, comment);
+        return this.reviewProduct(findProductByID(id),rating, comment);
     }
-    public Product reviewProduct(int rating, String comment)
+    public Product reviewProduct(int id, int rating, String comment)
     {
-        return this.reviewProduct(this.product, Rating.convert(rating), comment);
+        return this.reviewProduct(findProductByID(id),Rating.convert(rating), comment);
     }
     /**
      * Prints a product report:
      *  - Product information: Name, and Overall Rating
      *  - List of reviews: rating and comments
      */
-    public void printProductReport()
+    public void printProductReport(Product product)
     {
         StringBuilder text = new StringBuilder();
         text.append(MessageFormat.format(resources.getString("product"),
-                                         product.getName(),
-                                         moneyFormat.format(product.getPrice()),
-                                         product.getRating(),
-                                         dateFormat.format(product.getBestBefore()))+"\n");
-        // text.append("\n");
-        if( reviews != null )
-        {
-            for(int i = 0; i < reviews.length; ++i ){
-                text.append(MessageFormat.format(resources.getString("review"),
-                                                dateFormat.format(reviews[i].getTimeStamp()),
-                                                reviews[i].getRating(),
-                                                reviews[i].getComment())+"\n");
-            }
-        } else{
+        product.getName(),
+        moneyFormat.format(product.getPrice()),
+        product.getRating(),
+        dateFormat.format(product.getBestBefore()))+"\n");
+        
+        if( products.get(product).isEmpty() ){
             text.append(resources.getString("no.reviews")+"\n");
         }
+        else{
+            for (Review review : products.get(product)) {
+                text.append(MessageFormat.format(resources.getString("review"),
+                dateFormat.format(review.getTimeStamp()),
+                review.getRating(),
+                review.getComment())+"\n");
+            }
+        }
         System.out.println(text);
+    }
+    public void printProductReport(int id)
+    {
+        printProductReport(findProductByID(id));
+    }
+
+    public void printAllProductsReport()
+    {
+        System.out.println("\n------------------------ALL PRODUCTS REPORT------------------------\n");
+        for (Product product : products.keySet()) {
+            printProductReport(product);
+        }
+        System.out.println("-------------------------------------------------------------------\n");
+    }
+
+    /**
+     * Searches for a specific Product by ID
+     * @param id - ID of the product to be found
+     * @return the product, if there is one with the received ID in this ProductManager
+     * @return null, if there isn't one.
+     */
+    public Product findProductByID(int id)
+    {
+        for (Product product : products.keySet()) {
+            if ( product.getId() == id ){
+                return product;
+            }
+        }
+        return null;
     }
 
 }

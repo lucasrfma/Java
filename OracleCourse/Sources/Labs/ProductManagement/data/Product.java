@@ -3,7 +3,6 @@ package Labs.ProductManagement.data;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Objects;
 
 /**
  * {@code Product} class represents properties and behaviours of product objects
@@ -103,14 +102,12 @@ public abstract class Product implements Rateable<Product>{
         {
             return false;
         }
-        return this.id == ((Product)p).id && this.name.equals(((Product)p).name);
+        return this.id == ((Product)p).id;
     }
-    /**
-     * 
-     */
+
     @Override
     public int hashCode()
     {
-        return Objects.hash(id,name);
+        return id;
     }
 }

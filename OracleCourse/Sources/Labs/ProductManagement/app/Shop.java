@@ -1,7 +1,8 @@
 package Labs.ProductManagement.app;
 
 import java.math.BigDecimal;
-import java.util.Locale;
+// import java.util.Locale;
+import java.time.LocalDate;
 
 import Labs.ProductManagement.data.*;
 
@@ -14,38 +15,34 @@ public class Shop
     public static void main(String[] args) {
 
         ProductManager pm = new ProductManager();
-        ProductManager pmBR = new ProductManager(new Locale("pt","BR"));
+        // Locale brazil = new Locale("pt","BR");
+        // ProductManager pmBR = new ProductManager(brazil);
         
         pm.createProduct(101,"Tea",BigDecimal.valueOf(1.99));
-        pmBR.createProduct(101,"Chá", BigDecimal.valueOf(2.99));
+        pm.printProductReport(101);
+
+        pm.reviewProduct(101,Rating.FIVE_STAR, "Best tea i've ever had");
+        pm.printProductReport(101);
+
+        pm.reviewProduct(101,4, "Good, but not the best...");
+        pm.printProductReport(101);
+
+        pm.reviewProduct(101,3, "Not my cup of tea...");
+        pm.printProductReport(101);
         
-        pm.printProductReport();
-        pmBR.printProductReport();
+        pm.reviewProduct(101,Rating.THREE_STAR, "Meh...");
+        pm.createProduct(102, "Cake", BigDecimal.valueOf(5.99),LocalDate.now().plusDays(2));
+        
+        pm.printProductReport(101);
 
-        pm.reviewProduct(5, "Best tea i've ever had");
-        pmBR.reviewProduct(5, "TOp");
+        pm.reviewProduct(102,5, "Perfect cake");
+        pm.reviewProduct(102,4, "Very nice cake");
+        pm.reviewProduct(102,3, "Its ok...");
+        pm.reviewProduct(102,3, "Good, but too expensive");
+        pm.printProductReport(102);
+        
+        pm.printAllProductsReport();
 
-        pm.printProductReport();
-        pmBR.printProductReport();
-
-        pm.reviewProduct(4, "Good, but not the best...");
-        pmBR.reviewProduct(4, "Muito bom, mas não perfeito");
-
-        pm.printProductReport();
-        pmBR.printProductReport();
-
-        pm.reviewProduct(3, "Not my cup of tea...");
-        pmBR.reviewProduct(3, "Até é bom, mas pelo preço não vale");
-
-        pm.printProductReport();
-        pmBR.printProductReport();
-
-        pm.reviewProduct(3, "Meh...");
-        pmBR.reviewProduct(3, "Prefiro o que e faço");
-
-        pm.setLocale(new Locale("pt","BR"));
-
-        pm.printProductReport();
-        pmBR.printProductReport();
+        // System.out.println(pm.findProductByID(102));
     }
 }
