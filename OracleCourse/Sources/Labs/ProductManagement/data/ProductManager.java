@@ -7,8 +7,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ProductManager {
 
@@ -17,9 +20,7 @@ public class ProductManager {
     private DateTimeFormatter dateFormat;
     private NumberFormat moneyFormat;
     
-    private Product product;
-    private Review[] reviews;
-    private double ratingAverage;
+    Map<Product, List<Review>> products = new HashMap<>();
 
     /**
      * Constructor for ProductManager
@@ -69,22 +70,30 @@ public class ProductManager {
 
     public Product createProduct(int id, String name, BigDecimal price, LocalDate bestBefore)
     {
-        product = new Food(id, name, price, bestBefore);
+        Product product = new Food(id, name, price, bestBefore);
+        List<Review> newProductsReviews = new ArrayList<Review>();
+        products.putIfAbsent(product, newProductsReviews);
         return product;
     }
-    public Product createProduct(int id, String name, BigDecimal price, Rating rating)
-    {
-        product = new Drink(id, name, price, rating);
-        return product;
-    }
-    public Product createProduct(int id, String name, BigDecimal price, int rating)
-    {
-        product = new Drink(id, name, price, rating);
-        return product;
-    }
+    // public Product createProduct(int id, String name, BigDecimal price, Rating rating)
+    // {
+    //     Product product = new Drink(id, name, price, rating);
+    //     List<Review> newProductsReviews = new ArrayList<Review>();
+    //     products.putIfAbsent(product, newProductsReviews);
+    //     return product;
+    // }
+    // public Product createProduct(int id, String name, BigDecimal price, int rating)
+    // {
+    //     Product product = new Drink(id, name, price, rating);
+    //     List<Review> newProductsReviews = new ArrayList<Review>();
+    //     products.putIfAbsent(product, newProductsReviews);
+    //     return product;
+    // }
     public Product createProduct(int id, String name, BigDecimal price)
     {
-        product = new Drink(id, name, price);
+        Product product = new Drink(id, name, price);
+        List<Review> newProductsReviews = new ArrayList<Review>();
+        products.putIfAbsent(product, newProductsReviews);
         return product;
     }
 
@@ -101,21 +110,21 @@ public class ProductManager {
     public Product reviewProduct(Product product, Rating rating, String comment)
     {
         Review newReview = new Review(rating, comment);
-        if(reviews != null)
-        {
-            reviews = Arrays.copyOf(reviews, reviews.length+1);
-            reviews[reviews.length-1] = newReview;
-        } else
-        {
-            reviews = new Review[]{newReview};
+        products.get(product).add(newReview);
+        List<Review> newReviewList = products.get(product);
+        double sum = 0;
+        for (Review review : newReviewList) {
+            sum += review.getRating().ordinal();
         }
-        ratingAverage += (rating.ordinal()-ratingAverage)/reviews.length;
-        this.product = product.applyRating((int)Math.round(ratingAverage));
-        return this.product;
+        product = product.applyRating((int)Math.round(sum/newReviewList.size()));
+
+        products.remove(product);
+        products.put(product, newReviewList);
+        return product;
     }
     public Product reviewProduct(Product product, int rating, String comment)
     {
-        return this.reviewProduct(this.product,Rating.convert(rating), comment);
+        return this.reviewProduct(product,Rating.convert(rating), comment);
     }
     /**
      * Same method as above, but using this object's own Product.
@@ -126,14 +135,14 @@ public class ProductManager {
      * @param comment - comment made together with the rating
      * @return product with the rating applied
      */
-    public Product reviewProduct(Rating rating, String comment)
-    {
-        return this.reviewProduct(this.product, rating, comment);
-    }
-    public Product reviewProduct(int rating, String comment)
-    {
-        return this.reviewProduct(this.product, Rating.convert(rating), comment);
-    }
+    // public Product reviewProduct(Rating rating, String comment)
+    // {
+    //     return this.reviewProduct(this.product, rating, comment);
+    // }
+    // public Product reviewProduct(int rating, String comment)
+    // {
+    //     return this.reviewProduct(this.product, Rating.convert(rating), comment);
+    // }
     /**
      * Prints a product report:
      *  - Product information: Name, and Overall Rating
@@ -141,25 +150,29 @@ public class ProductManager {
      */
     public void printProductReport()
     {
-        StringBuilder text = new StringBuilder();
-        text.append(MessageFormat.format(resources.getString("product"),
-                                         product.getName(),
-                                         moneyFormat.format(product.getPrice()),
-                                         product.getRating(),
-                                         dateFormat.format(product.getBestBefore()))+"\n");
-        // text.append("\n");
-        if( reviews != null )
-        {
-            for(int i = 0; i < reviews.length; ++i ){
-                text.append(MessageFormat.format(resources.getString("review"),
-                                                dateFormat.format(reviews[i].getTimeStamp()),
-                                                reviews[i].getRating(),
-                                                reviews[i].getComment())+"\n");
+        System.out.println("\n--------------------------PRODUCT REPORT--------------------------\n");
+        for (Product product : products.keySet()) {
+            StringBuilder text = new StringBuilder();
+            text.append(MessageFormat.format(resources.getString("product"),
+            product.getName(),
+            moneyFormat.format(product.getPrice()),
+            product.getRating(),
+            dateFormat.format(product.getBestBefore()))+"\n");
+            
+            if( products.get(product).isEmpty() ){
+                text.append(resources.getString("no.reviews")+"\n");
             }
-        } else{
-            text.append(resources.getString("no.reviews")+"\n");
+            else{
+                for (Review review : products.get(product)) {
+                    text.append(MessageFormat.format(resources.getString("review"),
+                    dateFormat.format(review.getTimeStamp()),
+                    review.getRating(),
+                    review.getComment())+"\n");
+                }
+            }
+            System.out.println(text);
         }
-        System.out.println(text);
+        System.out.println("------------------------------------------------------------------\n");
     }
 
 }
