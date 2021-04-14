@@ -68,27 +68,4 @@ public class Food extends Product {
     {
         return super.getDebitDiscount().add(getDiscount());
     }
-
-    /**
-     * Overrides of Object class methods
-     */
-    // @Override
-    // public String toString()
-    // {
-    //     return super.toString() + " | Best Before " + bestBefore;
-    // }
-    @Override
-    public boolean equals(Object p)
-    {
-        if( !(p instanceof Food) )
-        {
-            return false;
-        }
-        return super.equals(p) && bestBefore.equals(((Food)p).bestBefore);
-    }
-    @Override
-    public int hashCode()
-    {
-        return super.hashCode() + bestBefore.hashCode();
-    }
 }

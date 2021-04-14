@@ -1,15 +1,26 @@
 package Labs.ProductManagement.data;
 
 import java.math.BigDecimal;
-import java.text.MessageFormat;
-import java.text.NumberFormat;
 import java.time.LocalDate;
+// to concatenate and format strings
+import java.text.MessageFormat;
+// to customize number format, such as currency etc
+import java.text.NumberFormat;
+// to customize date time format, such as mm/dd/yyyy or something like that
 import java.time.format.DateTimeFormatter;
+// enumeration to easily choose between standard date time formats
 import java.time.format.FormatStyle;
+// to be used in conjunction with the above formatting classes
 import java.util.Locale;
-import java.util.Map;
+// to be able to get information out of a .properties file
+// used in tandem with locale to choose specific .properties files
+// according to chosen locale
 import java.util.ResourceBundle;
+
+//collections used
+import java.util.Map;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,15 +63,13 @@ public class ProductManager {
     public Product createProduct(int id, String name, BigDecimal price, LocalDate bestBefore)
     {
         Product product = new Food(id, name, price, bestBefore);
-        List<Review> newProductsReviews = new ArrayList<Review>();
-        products.putIfAbsent(product, newProductsReviews);
+        products.putIfAbsent(product, new ArrayList<Review>());
         return product;
     }
     public Product createProduct(int id, String name, BigDecimal price)
     {
         Product product = new Drink(id, name, price);
-        List<Review> newProductsReviews = new ArrayList<Review>();
-        products.putIfAbsent(product, newProductsReviews);
+        products.putIfAbsent(product, new ArrayList<Review>());
         return product;
     }
 
@@ -73,14 +82,15 @@ public class ProductManager {
      */
     public Product reviewProduct(Product product, Rating rating, String comment)
     {
-        Review newReview = new Review(rating, comment);
-        products.get(product).add(newReview);
+        products.get(product).add(new Review(rating, comment));
         List<Review> newReviewList = products.get(product);
         double sum = 0;
         for (Review review : newReviewList) {
             sum += review.getRating().ordinal();
         }
         product = product.applyRating((int)Math.round(sum/newReviewList.size()));
+
+        Collections.sort(newReviewList,Collections.reverseOrder());
 
         products.remove(product);
         products.put(product, newReviewList);
@@ -90,36 +100,69 @@ public class ProductManager {
     {
         return this.reviewProduct(product,Rating.convert(rating), comment);
     }
+    public Product reviewProduct(int id, Rating rating, String comment)
+    {
+        return this.reviewProduct(findProductByID(id),rating, comment);
+    }
+    public Product reviewProduct(int id, int rating, String comment)
+    {
+        return this.reviewProduct(findProductByID(id),Rating.convert(rating), comment);
+    }
     /**
      * Prints a product report:
      *  - Product information: Name, and Overall Rating
      *  - List of reviews: rating and comments
      */
-    public void printProductReport()
+    public void printProductReport(Product product)
     {
-        System.out.println("\n--------------------------PRODUCT REPORT--------------------------\n");
-        for (Product product : products.keySet()) {
-            StringBuilder text = new StringBuilder();
-            text.append(MessageFormat.format(resources.getString("product"),
-            product.getName(),
-            moneyFormat.format(product.getPrice()),
-            product.getRating(),
-            dateFormat.format(product.getBestBefore()))+"\n");
-            
-            if( products.get(product).isEmpty() ){
-                text.append(resources.getString("no.reviews")+"\n");
-            }
-            else{
-                for (Review review : products.get(product)) {
-                    text.append(MessageFormat.format(resources.getString("review"),
-                    dateFormat.format(review.getTimeStamp()),
-                    review.getRating(),
-                    review.getComment())+"\n");
-                }
-            }
-            System.out.println(text);
+        StringBuilder text = new StringBuilder();
+        text.append(MessageFormat.format(resources.getString("product"),
+        product.getName(),
+        moneyFormat.format(product.getPrice()),
+        product.getRating(),
+        dateFormat.format(product.getBestBefore()))+"\n");
+        
+        if( products.get(product).isEmpty() ){
+            text.append(resources.getString("no.reviews")+"\n");
         }
-        System.out.println("------------------------------------------------------------------\n");
+        else{
+            for (Review review : products.get(product)) {
+                text.append(MessageFormat.format(resources.getString("review"),
+                dateFormat.format(review.getTimeStamp()),
+                review.getRating(),
+                review.getComment())+"\n");
+            }
+        }
+        System.out.println(text);
+    }
+    public void printProductReport(int id)
+    {
+        printProductReport(findProductByID(id));
+    }
+
+    public void printAllProductsReport()
+    {
+        System.out.println("\n------------------------ALL PRODUCTS REPORT------------------------\n");
+        for (Product product : products.keySet()) {
+            printProductReport(product);
+        }
+        System.out.println("-------------------------------------------------------------------\n");
+    }
+
+    /**
+     * Searches for a specific Product by ID
+     * @param id - ID of the product to be found
+     * @return the product, if there is one with the received ID in this ProductManager
+     * @return null, if there isn't one.
+     */
+    public Product findProductByID(int id)
+    {
+        for (Product product : products.keySet()) {
+            if ( product.getId() == id ){
+                return product;
+            }
+        }
+        return null;
     }
 
 }

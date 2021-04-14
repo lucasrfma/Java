@@ -2,7 +2,7 @@ package Labs.ProductManagement.data;
 
 import java.time.LocalDateTime;
 
-public class Review implements Rateable<Review>
+public class Review implements Rateable<Review>, Comparable<Review>
 {
     private Rating rating;
     private String comment;
@@ -28,5 +28,10 @@ public class Review implements Rateable<Review>
     @Override
     public Review applyRating(Rating rating) {
         return (new Review(rating,this.comment));
+    }
+
+    @Override
+    public int compareTo(Review o) {
+        return this.rating.ordinal() - o.rating.ordinal();
     }
 }
