@@ -49,25 +49,6 @@ public class ProductManager {
         moneyFormat = NumberFormat.getCurrencyInstance(locale);
     }
 
-
-    /**
-     * Since this product manager has to keep track of reviews and make an average
-     * out of them, doesn't seem appropriate to start off with a rating.
-     * Maybe if these methods also included in the parameters at least an
-     * "reviewNumber" integer as well, to give a weight to this starting rating it
-     * would make sense...
-     */
-    // public Product createProduct(int id, String name, BigDecimal price, Rating rating, LocalDate bestBefore)
-    // {
-    //     product = new Food(id, name, price, rating, bestBefore);
-    //     return product;
-    // }
-    // public Product createProduct(int id, String name, BigDecimal price, int rating, LocalDate bestBefore)
-    // {
-    //     product = new Food(id, name, price, rating, bestBefore);
-    //     return product;
-    // }
-
     public Product createProduct(int id, String name, BigDecimal price, LocalDate bestBefore)
     {
         Product product = new Food(id, name, price, bestBefore);
@@ -75,20 +56,6 @@ public class ProductManager {
         products.putIfAbsent(product, newProductsReviews);
         return product;
     }
-    // public Product createProduct(int id, String name, BigDecimal price, Rating rating)
-    // {
-    //     Product product = new Drink(id, name, price, rating);
-    //     List<Review> newProductsReviews = new ArrayList<Review>();
-    //     products.putIfAbsent(product, newProductsReviews);
-    //     return product;
-    // }
-    // public Product createProduct(int id, String name, BigDecimal price, int rating)
-    // {
-    //     Product product = new Drink(id, name, price, rating);
-    //     List<Review> newProductsReviews = new ArrayList<Review>();
-    //     products.putIfAbsent(product, newProductsReviews);
-    //     return product;
-    // }
     public Product createProduct(int id, String name, BigDecimal price)
     {
         Product product = new Drink(id, name, price);
@@ -98,10 +65,7 @@ public class ProductManager {
     }
 
     /**
-     * Review some other product...
-     *  Not sure how this would be useful, but it is what was created in the practice
-     *  lesson of the course
-     *  It would make sense if the rating+comment system was saved in the product itself I guess...
+     * Review a product on the Map
      * @param product - product to b reviewed
      * @param rating - rating to be applied
      * @param comment - comment made together with the rating
@@ -126,23 +90,6 @@ public class ProductManager {
     {
         return this.reviewProduct(product,Rating.convert(rating), comment);
     }
-    /**
-     * Same method as above, but using this object's own Product.
-     * Seems to make more sense since the reviews are stored here, no on the Product object.
-     * But it also makes this class not a simple factoryClass, made to create products and return them
-     * but to actually keep track of a single product object and its reviews.
-     * @param rating - rating to be applied
-     * @param comment - comment made together with the rating
-     * @return product with the rating applied
-     */
-    // public Product reviewProduct(Rating rating, String comment)
-    // {
-    //     return this.reviewProduct(this.product, rating, comment);
-    // }
-    // public Product reviewProduct(int rating, String comment)
-    // {
-    //     return this.reviewProduct(this.product, Rating.convert(rating), comment);
-    // }
     /**
      * Prints a product report:
      *  - Product information: Name, and Overall Rating
