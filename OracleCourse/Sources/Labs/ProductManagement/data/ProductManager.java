@@ -25,13 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ProductManager {
-
-    // private Locale locale;
-    private ResourceBundle resources;
-    private DateTimeFormatter dateFormat;
-    private NumberFormat moneyFormat;
     
     Map<Product, List<Review>> products = new HashMap<>();
+    
+    ResourceFormatter resourceFormatter;
 
     /**
      * Constructor for ProductManager
@@ -40,7 +37,7 @@ public class ProductManager {
      */
     public ProductManager(Locale locale)
     {
-        this.setLocale(locale);
+        resourceFormatter = new ResourceFormatter(locale.toLanguageTag());
     }
     /**
      * Default constructor for ProductManager
@@ -48,16 +45,28 @@ public class ProductManager {
      */
     public ProductManager()
     {
-        this.setLocale(new Locale("en","US"));
+        this(LocaleSet.EN_US);
     }
-    /**
-     * Resets locale
-     */
-    public void setLocale(Locale locale)
+    public ProductManager(String locale)
     {
-        resources = ResourceBundle.getBundle("labs.ProductManagement.data.resources", locale);
-        dateFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).localizedBy(locale);
-        moneyFormat = NumberFormat.getCurrencyInstance(locale);
+        resourceFormatter = new ResourceFormatter(locale);
+    }
+    public ProductManager(LocaleSet locale)
+    {
+        resourceFormatter = new ResourceFormatter(locale);
+    }
+
+    public void changeLocale(Locale locale)
+    {
+        resourceFormatter.setLocale(locale.toLanguageTag());
+    }
+    public void changeLocale(String locale)
+    {
+        resourceFormatter.setLocale(locale);
+    }
+    public void changeLocale(LocaleSet locale)
+    {
+        resourceFormatter.setLocale(locale);
     }
 
     public Product createProduct(int id, String name, BigDecimal price, LocalDate bestBefore)
@@ -116,21 +125,14 @@ public class ProductManager {
     public void printProductReport(Product product)
     {
         StringBuilder text = new StringBuilder();
-        text.append(MessageFormat.format(resources.getString("product"),
-        product.getName(),
-        moneyFormat.format(product.getPrice()),
-        product.getRating(),
-        dateFormat.format(product.getBestBefore()))+"\n");
+        text.append(resourceFormatter.formatProduct(product));
         
         if( products.get(product).isEmpty() ){
-            text.append(resources.getString("no.reviews")+"\n");
+            text.append(resourceFormatter.getResourceText("no.reviews")+"\n");
         }
         else{
             for (Review review : products.get(product)) {
-                text.append(MessageFormat.format(resources.getString("review"),
-                dateFormat.format(review.getTimeStamp()),
-                review.getRating(),
-                review.getComment())+"\n");
+                text.append(resourceFormatter.formatReview(review));
             }
         }
         System.out.println(text);
@@ -142,7 +144,7 @@ public class ProductManager {
 
     public void printAllProductsReport()
     {
-        System.out.println("\n------------------------ALL PRODUCTS REPORT------------------------\n");
+        System.out.println(resourceFormatter.getResourceText("all.products"));
         for (Product product : products.keySet()) {
             printProductReport(product);
         }
@@ -165,4 +167,104 @@ public class ProductManager {
         return null;
     }
 
+    private static class ResourceFormatter{
+
+        // private Locale locale;
+        private ResourceBundle resources;
+        private DateTimeFormatter dateFormat;
+        private NumberFormat moneyFormat;
+
+        private ResourceFormatter(Locale locale)
+        {
+            this.setLocale(locale.toLanguageTag());
+        }
+        private ResourceFormatter(LocaleSet locale){
+            this.setLocale(locale);
+        }
+        private ResourceFormatter(String locale)
+        {
+            this.setLocale(locale);
+        }
+        /**
+         * Resets locale
+         */
+        private void setLocale(Locale locale)
+        {
+            resources = ResourceBundle.getBundle("labs.ProductManagement.data.resources", locale);
+            dateFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).localizedBy(locale);
+            moneyFormat = NumberFormat.getCurrencyInstance(locale);
+        }
+        private void setLocale(LocaleSet locale)
+        {
+            String[] newLocale = locale.toString().split("-");
+            this.setLocale(new Locale(newLocale[0],newLocale[1]));
+        }
+        private void setLocale(String locale)
+        {
+            locale = locale.replace('_', '-');
+            boolean validLocale = false;
+            for (var element : LocaleSet.values()) {
+                if(element.toString().equals(locale)){
+                    validLocale = true;
+                    this.setLocale(element);
+                }
+            }
+            if(!validLocale){
+                this.setLocale(LocaleSet.EN_US);
+            }
+        }
+
+        private String formatProduct(Product product)
+        {
+            return MessageFormat.format(resources.getString("product"),
+                                product.getName(),
+                                moneyFormat.format(product.getPrice()),
+                                product.getRating(),
+                                dateFormat.format(product.getBestBefore()))+"\n";
+        }
+
+        private String formatReview(Review review)
+        {
+            return MessageFormat.format(resources.getString("review"),
+                                        dateFormat.format(review.getTimeStamp()),
+                                        review.getRating(),
+                                        review.getComment())+"\n";
+        }
+
+        private String getResourceText(String key)
+        {
+            return resources.getString(key);
+        }
+
+    }
+
+    public enum LocaleSet{
+
+        EN_US   ("en-US"),
+        EN_GB   ("en-GB"),
+        PT_BR   ("pt-BR");
+
+        private String locale;
+    
+        private LocaleSet(String locale)
+        {
+            this.locale = locale;
+        }
+    
+        @Override
+        public String toString()
+        {
+            return locale;
+        }
+        /**
+         * Converts integer to LocaleSet
+         * @param intLocale Integer value representing a LocaleSet
+         * @return The equivalent LocaleSet to the integer received.
+         * Returns LocaleSet.EN_US if intRating is not a valid number.
+         */
+        public static LocaleSet convert(int intLocale)
+        {
+            return (intLocale >= 0 && intLocale <= 5) ? LocaleSet.values()[intLocale] : EN_US; 
+        }
+    }
 }
