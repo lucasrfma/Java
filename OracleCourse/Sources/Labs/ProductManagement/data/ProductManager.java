@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -150,6 +151,16 @@ public class ProductManager {
         }
         System.out.println("-------------------------------------------------------------------\n");
     }
+    public void printAllProductsReport(Comparator<Product> sorter)
+    {
+        List<Product> productList = new ArrayList<>(products.keySet());
+        productList.sort(sorter);
+        System.out.println(resourceFormatter.getResourceText("all.products"));
+        for (Product product : productList) {
+            printProductReport(product);
+        }
+        System.out.println("-------------------------------------------------------------------\n");
+    }
 
     /**
      * Searches for a specific Product by ID
@@ -242,6 +253,7 @@ public class ProductManager {
 
         EN_US   ("en-US"),
         EN_GB   ("en-GB"),
+        JP_JP   ("jp-JP"),
         PT_BR   ("pt-BR");
 
         private String locale;
