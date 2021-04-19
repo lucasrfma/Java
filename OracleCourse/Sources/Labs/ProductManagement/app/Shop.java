@@ -65,8 +65,8 @@ public class Shop
         pm.reviewProduct(105, 1, "Water should be free >:(");
 
         
-        Comparator<Product> DescendingPriceSorter = (p1,p2) -> p2.getPrice().compareTo(p1.getPrice());
-        Comparator<Product> DescendingRatingSorter = (p1,p2) -> p2.getRating().ordinal() - p1.getRating().ordinal();
+        // Comparator<Product> DescendingPriceSorter = (p1,p2) -> p2.getPrice().compareTo(p1.getPrice());
+        // Comparator<Product> DescendingRatingSorter = (p1,p2) -> p2.getRating().ordinal() - p1.getRating().ordinal();
         Comparator<Product> AscendingPriceSorter = (p1,p2) -> p1.getPrice().compareTo(p2.getPrice());
         Comparator<Product> AscendingRatingSorter = (p1,p2) -> p1.getRating().ordinal() - p2.getRating().ordinal();
         // unsorted
@@ -79,7 +79,7 @@ public class Shop
         // Ascending Price then Ascending Rating
         pm.printAllProductsReport(AscendingPriceSorter.thenComparing(AscendingRatingSorter));   
         // Ascending Rating then Ascending Price
-        pm.printAllProductsReport(AscendingRatingSorter.thenComparing(AscendingPriceSorter));
+        pm.printFilteredProductsReport( p -> p.getId() < 104,AscendingRatingSorter.thenComparing(AscendingPriceSorter));
 
     }
 }

@@ -16,10 +16,12 @@ import java.util.Locale;
 // used in tandem with locale to choose specific .properties files
 // according to chosen locale
 import java.util.ResourceBundle;
-
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 //collections used
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -94,16 +96,22 @@ public class ProductManager {
     {
         products.get(product).add(new Review(rating, comment));
         List<Review> newReviewList = products.get(product);
-        double sum = 0;
-        for (Review review : newReviewList) {
-            sum += review.getRating().ordinal();
-        }
-        product = product.applyRating((int)Math.round(sum/newReviewList.size()));
+        
+        // double sum = 0;
+        // for (Review review : newReviewList) {
+        //     sum += review.getRating().ordinal();
+        // }
+        // product = product.applyRating((int)Math.round(sum/newReviewList.size()));
+
+        product = product.applyRating((int) Math.round(newReviewList.stream().mapToInt( r -> r.getRating().ordinal())
+                                                                             .average()
+                                                                             .orElse(0)));
 
         Collections.sort(newReviewList,Collections.reverseOrder());
-
+        
         products.remove(product);
         products.put(product, newReviewList);
+        
         return product;
     }
     public Product reviewProduct(Product product, int rating, String comment)
@@ -132,10 +140,14 @@ public class ProductManager {
             text.append(resourceFormatter.getResourceText("no.reviews")+"\n");
         }
         else{
-            for (Review review : products.get(product)) {
-                text.append(resourceFormatter.formatReview(review));
-            }
+            // for (Review review : products.get(product)) {
+            //     text.append(resourceFormatter.formatReview(review));
+            // }
+            text.append(products.get(product).stream()
+                                             .map( r -> resourceFormatter.formatReview(r))
+                                             .collect(Collectors.joining()));       
         }
+
         System.out.println(text);
     }
     public void printProductReport(int id)
@@ -146,20 +158,47 @@ public class ProductManager {
     public void printAllProductsReport()
     {
         System.out.println(resourceFormatter.getResourceText("all.products"));
-        for (Product product : products.keySet()) {
-            printProductReport(product);
-        }
+        // for (Product product : products.keySet()) {
+        //     printProductReport(product);
+        // }
+        products.keySet().stream().forEach( p -> printProductReport(p));
         System.out.println("-------------------------------------------------------------------\n");
     }
     public void printAllProductsReport(Comparator<Product> sorter)
     {
-        List<Product> productList = new ArrayList<>(products.keySet());
-        productList.sort(sorter);
         System.out.println(resourceFormatter.getResourceText("all.products"));
-        for (Product product : productList) {
-            printProductReport(product);
-        }
+        // List<Product> productList = new ArrayList<>(products.keySet());
+        // productList.sort(sorter);
+        // for (Product product : productList) {
+        //     printProductReport(product);
+        // }
+        products.keySet().stream().sorted(sorter)
+        .forEachOrdered( p -> printProductReport(p));
         System.out.println("-------------------------------------------------------------------\n");
+    }
+    public void printFilteredProductsReport(Predicate<? super Product> predicate)
+    {
+        System.out.println(resourceFormatter.getResourceText("all.products"));
+        // for (Product product : products.keySet()) {
+        //     printProductReport(product);
+        // }
+        products.keySet().stream().filter(predicate)
+                                    .forEach( p -> printProductReport(p));
+        System.out.println("-------------------------------------------------------------------\n");
+    }
+    public void printFilteredProductsReport(Predicate<? super Product> predicate,Comparator<Product> sorter)
+    {
+        System.out.println(resourceFormatter.getResourceText("all.products"));
+
+        products.keySet().stream().filter(predicate)
+                                  .sorted(sorter)
+                                  .forEachOrdered( p -> printProductReport(p));
+        System.out.println("-------------------------------------------------------------------\n");
+    }
+
+    public Map<String, String> getDiscounts()
+    {
+        
     }
 
     /**
@@ -170,12 +209,15 @@ public class ProductManager {
      */
     public Product findProductByID(int id)
     {
-        for (Product product : products.keySet()) {
-            if ( product.getId() == id ){
-                return product;
-            }
-        }
-        return null;
+        // for (Product product : products.keySet()) {
+        //     if ( product.getId() == id ){
+        //         return product;
+        //     }
+        // }
+        // return null;
+        return products.keySet().stream().filter( p -> p.getId() == id)
+                                         .findAny()
+                                         .orElse(null);
     }
 
     private static class ResourceFormatter{
@@ -212,7 +254,7 @@ public class ProductManager {
         }
         private void setLocale(String locale)
         {
-            locale = locale.replace('_', '-');
+            final String treatedLocale = locale.replace('_', '-');
             boolean validLocale = false;
             for (var element : LocaleSet.values()) {
                 if(element.toString().equals(locale)){
@@ -220,6 +262,7 @@ public class ProductManager {
                     this.setLocale(element);
                 }
             }
+
             if(!validLocale){
                 this.setLocale(LocaleSet.EN_US);
             }
