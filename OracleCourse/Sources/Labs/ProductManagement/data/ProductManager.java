@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 //collections used
 import java.util.Map;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -195,10 +194,53 @@ public class ProductManager {
                                   .forEachOrdered( p -> printProductReport(p));
         System.out.println("-------------------------------------------------------------------\n");
     }
-
+    /**
+     * Returns a map with key = rating (as string)
+     *                    value = total discount (as string)
+     * collect(Collectors.groupingBy())  -> creates the map
+     *                                      first parameter -> key  (rating)
+     *                                      Second parameter -> value
+     *                                                       -> To get the value: sums the groups created by grouping by
+     *                                                                            then formats it
+     * @return
+     */
     public Map<String, String> getDiscounts()
     {
+        // return products.keySet()
+        //                .stream()
+        //                .collect(Collectors.groupingBy(
+        //                     p -> p.getRating().toString() ,
+        //                     Collectors.collectingAndThen(
+        //                         Collectors.summingDouble(
+        //                             p -> p.getDiscount().doubleValue()
+        //                         ),
+        //                         discount -> resourceFormatter.moneyFormat.format(discount)
+        //                     )
+        //                 ));
+
+        // Implementation without streams, for comparation purposes:
+        Rating[] ratings = Rating.values();
+        BigDecimal[] discountTotals = new BigDecimal[ratings.length];
+        boolean[] ratingPresent = new boolean[ratings.length];
+        for (int i = 0; i < discountTotals.length; i++) {
+            discountTotals[i] = BigDecimal.ZERO;
+        }
         
+        for (Product product : products.keySet()) {
+            // discountTotals[product.getRating().ordinal()] += product.getDiscount().doubleValue();
+            discountTotals[product.getRating().ordinal()] = discountTotals[product.getRating().ordinal()].add(product.getDiscount());
+            ratingPresent[product.getRating().ordinal()] = true;
+        }
+
+        Map<String,String> compiledResults = new HashMap<>();
+        for (int i = 0; i < discountTotals.length; i++) {
+            if(ratingPresent[i])
+            {
+                compiledResults.put(ratings[i].toString(), resourceFormatter.moneyFormat.format(discountTotals[i]));
+            }
+        }
+        return compiledResults;
+
     }
 
     /**
@@ -257,7 +299,7 @@ public class ProductManager {
             final String treatedLocale = locale.replace('_', '-');
             boolean validLocale = false;
             for (var element : LocaleSet.values()) {
-                if(element.toString().equals(locale)){
+                if(element.toString().equals(treatedLocale)){
                     validLocale = true;
                     this.setLocale(element);
                 }

@@ -6,8 +6,8 @@ import java.time.LocalTime;
 
 public class Drink extends Product {
     
-    private static LocalTime happyHourStart = LocalTime.of(17, 29, 59);
-    private static LocalTime happyHourEnd = LocalTime.of(18, 31);
+    private static LocalTime happyHourStart = LocalTime.of(11, 00, 00);
+    private static LocalTime happyHourEnd = LocalTime.of(13, 31);
 
     Drink(int id,String name, BigDecimal price, Rating rating)
     {

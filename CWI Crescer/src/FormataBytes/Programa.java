@@ -29,21 +29,14 @@ public class Programa
 
     public enum EscalasByte
     {
-         B ("B"),
-        KB ("KB"),
-        MB ("MB"),
-        GB ("GB"),
-        TB ("TB"),
-        PB ("PB"),
-        EB ("EB"),
-        zB ("ZB"),
-        YB ("YB");
-
-        private String escala;
-
-        private EscalasByte(String s)
-        {
-            escala = s;
-        }
+         B,
+        KB,
+        MB,
+        GB,
+        TB,
+        PB,
+        EB,
+        zB,
+        YB;
     }
 }
