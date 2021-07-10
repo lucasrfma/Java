@@ -1,0 +1,362 @@
+"C:\Program Files\AdoptOpenJDK\jdk-15.0.2.7-hotspot\bin\java.exe" "-javaagent:D:\IntelliJ IDEA Community Edition 2021.1.1\lib\idea_rt.jar=50518:D:\IntelliJ IDEA Community Edition 2021.1.1\bin" -Dfile.encoding=UTF-8 -classpath C:\Users\lucas\IdeaProjects\Projeto.POO.UNI7\out\production\Projeto.POO.UNI7 Menu
+
+Sistema da Universidade
+
+1 - Menu Alunos
+2 - Menu Funcionários
+3 - Menu Turmas
+4 - Registrar acontecimento de aula
+
+0 - Sair.
+1
+Menu Alunos
+
+1 - Novo Aluno
+2 - Listar Alunos
+3 - Consultar Aluno Específico
+4 - Matricular Aluno em Turma
+5 - Desmatricular Aluno de Turma
+6 - Remover Aluno da Universidade
+
+0 - Retornar ao menu principal
+1
+
+Inscrição de aluno. Insira as seguintes informações:
+
+Nome: lucas
+
+CPF: 12345678910
+
+Aperte enter para continuar.
+
+Menu Alunos
+
+1 - Novo Aluno
+2 - Listar Alunos
+3 - Consultar Aluno Específico
+4 - Matricular Aluno em Turma
+5 - Desmatricular Aluno de Turma
+6 - Remover Aluno da Universidade
+
+0 - Retornar ao menu principal
+0
+
+Aperte enter para continuar.
+
+
+Sistema da Universidade
+
+1 - Menu Alunos
+2 - Menu Funcionários
+3 - Menu Turmas
+4 - Registrar acontecimento de aula
+
+0 - Sair.
+2
+Menu Funcionários
+
+1 - Novo Professor
+2 - Novo Analista de Sistemas
+3 - Novo Motorista
+4 - Novo Tesoureiro
+5 - Novo Secretário
+6 - Listar Funcionários
+7 - Consultar Funcionário Específico
+8 - Remover Funcionário
+
+0 - Retornar ao menu principal
+1
+
+Inscrição de Professor. Insira as seguintes informações:
+
+Nome: Professor A
+
+Data de Nascimento: Formato dd/mm/aa
+1/2/1961
+
+Escolha uma opção de escolaridade:
+1 - Ensino Superior
+2 - Pós Graduado
+3 - Mestre
+4 - Doutor
+4
+
+Salário: 10000
+
+Aperte enter para continuar.
+
+Menu Funcionários
+
+1 - Novo Professor
+2 - Novo Analista de Sistemas
+3 - Novo Motorista
+4 - Novo Tesoureiro
+5 - Novo Secretário
+6 - Listar Funcionários
+7 - Consultar Funcionário Específico
+8 - Remover Funcionário
+
+0 - Retornar ao menu principal
+0
+
+Aperte enter para continuar.
+
+
+Sistema da Universidade
+
+1 - Menu Alunos
+2 - Menu Funcionários
+3 - Menu Turmas
+4 - Registrar acontecimento de aula
+
+0 - Sair.
+3
+Menu Turmas
+
+1 - Nova Turma
+2 - Listar Turmas
+3 - Consultar Turma Específica
+4 - Remover Turma
+
+0 - Retornar ao menu principal
+1
+
+Criação de turma. Insira as seguintes informações:
+
+Nome da disciplina:
+POO
+
+Matrícula do professor titular:
+0
+
+Aperte enter para continuar.
+
+Menu Turmas
+
+1 - Nova Turma
+2 - Listar Turmas
+3 - Consultar Turma Específica
+4 - Remover Turma
+
+0 - Retornar ao menu principal
+0
+
+Aperte enter para continuar.
+
+
+Sistema da Universidade
+
+1 - Menu Alunos
+2 - Menu Funcionários
+3 - Menu Turmas
+4 - Registrar acontecimento de aula
+
+0 - Sair.
+1
+Menu Alunos
+
+1 - Novo Aluno
+2 - Listar Alunos
+3 - Consultar Aluno Específico
+4 - Matricular Aluno em Turma
+5 - Desmatricular Aluno de Turma
+6 - Remover Aluno da Universidade
+
+0 - Retornar ao menu principal
+4
+Digite a matrícula do aluno.
+0
+Digite o ID da turma.
+0
+Matrícula realizada com sucesso.
+
+Aperte enter para continuar.
+
+Menu Alunos
+
+1 - Novo Aluno
+2 - Listar Alunos
+3 - Consultar Aluno Específico
+4 - Matricular Aluno em Turma
+5 - Desmatricular Aluno de Turma
+6 - Remover Aluno da Universidade
+
+0 - Retornar ao menu principal
+0
+
+Aperte enter para continuar.
+
+
+Sistema da Universidade
+
+1 - Menu Alunos
+2 - Menu Funcionários
+3 - Menu Turmas
+4 - Registrar acontecimento de aula
+
+0 - Sair.
+4
+Registro de aula dada.
+Digite as seguintes informações:
+
+Matrícula do professor que deu a aula:
+0
+
+ID da turma:
+0
+
+Sistema da Universidade
+
+1 - Menu Alunos
+2 - Menu Funcionários
+3 - Menu Turmas
+4 - Registrar acontecimento de aula
+
+0 - Sair.
+1
+Menu Alunos
+
+1 - Novo Aluno
+2 - Listar Alunos
+3 - Consultar Aluno Específico
+4 - Matricular Aluno em Turma
+5 - Desmatricular Aluno de Turma
+6 - Remover Aluno da Universidade
+
+0 - Retornar ao menu principal
+2
+
+-------------------------LISTA ALUNOS-------------------------:
+
+Matrícula Nome                          Nº Turmas Matriculadas
+
+0         lucas                         1
+
+-------------------------FIM DA LISTA-------------------------
+
+Aperte enter para continuar.
+
+Menu Alunos
+
+1 - Novo Aluno
+2 - Listar Alunos
+3 - Consultar Aluno Específico
+4 - Matricular Aluno em Turma
+5 - Desmatricular Aluno de Turma
+6 - Remover Aluno da Universidade
+
+0 - Retornar ao menu principal
+3
+
+Consulta de aluno.
+
+Digite o número de matrícula do aluno a consultar:
+
+0
+
+Ativo: true
+Matricula: 0
+Nome: lucas
+Presenças: 1
+CPF:12345678910
+Turmas:
+ 0 - POO - Professor A
+
+
+Aperte enter para continuar.
+
+Menu Alunos
+
+1 - Novo Aluno
+2 - Listar Alunos
+3 - Consultar Aluno Específico
+4 - Matricular Aluno em Turma
+5 - Desmatricular Aluno de Turma
+6 - Remover Aluno da Universidade
+
+0 - Retornar ao menu principal
+0
+
+Aperte enter para continuar.
+
+
+Sistema da Universidade
+
+1 - Menu Alunos
+2 - Menu Funcionários
+3 - Menu Turmas
+4 - Registrar acontecimento de aula
+
+0 - Sair.
+2
+Menu Funcionários
+
+1 - Novo Professor
+2 - Novo Analista de Sistemas
+3 - Novo Motorista
+4 - Novo Tesoureiro
+5 - Novo Secretário
+6 - Listar Funcionários
+7 - Consultar Funcionário Específico
+8 - Remover Funcionário
+
+0 - Retornar ao menu principal
+7
+Consulta de Funcionário específico.
+
+Indique seu cargo:
+1 - Professor;
+2 - Analista de Sistemas;
+3 - Motorista;
+4 - Tesoureiro;
+5 - Secretário.
+
+1
+Indique a matrícula do funcionário:
+0
+
+Ativo: true
+Matricula: 0
+Nome: Professor A
+Escolaridade: DOUTORADO
+Total de aulas dadas: 1
+	Aulas dadas como titular: 1
+	Aulas dadas como substitudo: 0
+	Aulas em que foi substituído: 0
+Data de Nascimento: 1961-02-01
+Data de Admissão: 2021-07-10
+Salário: 10000.0
+Turmas:
+ 0 - POO - Professor A
+
+
+Aperte enter para continuar.
+
+Menu Funcionários
+
+1 - Novo Professor
+2 - Novo Analista de Sistemas
+3 - Novo Motorista
+4 - Novo Tesoureiro
+5 - Novo Secretário
+6 - Listar Funcionários
+7 - Consultar Funcionário Específico
+8 - Remover Funcionário
+
+0 - Retornar ao menu principal
+0
+
+Aperte enter para continuar.
+
+
+Sistema da Universidade
+
+1 - Menu Alunos
+2 - Menu Funcionários
+3 - Menu Turmas
+4 - Registrar acontecimento de aula
+
+0 - Sair.
+0
+
+Process finished with exit code 0
